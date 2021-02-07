@@ -1,0 +1,43 @@
+﻿@model IEnumerable<GigHub.Core.Models.Gig>
+
+@{
+    ViewBag.Title = "Mine";
+}
+
+<h2>My upcoming Gigs</h2>
+<ul class="gigs voffset2">
+    @foreach (var gig in Model)
+    {
+        <li>
+            <div class="date">
+                <div class="month">
+                    @gig.Date.ToString("MM")
+                </div>
+                <div class="day">
+                    @gig.Date.ToString("dd")
+                </div>
+            </div>
+            <div class="details">
+                <span class="artist">
+                    @gig.Venue
+                </span>
+                <span class="genre">
+                    @gig.Genre.Name
+                </span>
+                <div class="actions">
+                    <a href="@Url.Action("Edit", "Gigs" , new { id=gig.Id})">Edit</a> |
+                    <a href="#" data-gig-id="@gig.Id" class="js-cancel-gig">Cancel</a>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            GigsController.initCancelGig();
+        });
+    </script>
+    }

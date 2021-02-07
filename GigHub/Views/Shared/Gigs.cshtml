@@ -1,0 +1,61 @@
+﻿@model GigHub.Core.ViewModels.GigsViewModel
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h1>@Model.Heading</h1>
+@using (Html.BeginForm("Search", "Gigs"))
+{
+    <div class="form-group">
+        <div id="searchGigs" class="input-group">
+            @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control", placeholder = "search by genre, artist, venue..." })
+            <span class="input-group-addon">
+                <i class="glyphicon glyphicon-search"></i>
+            </span>
+        </div>
+    </div>
+}
+<ul id="gigs" class="gigs voffset2">
+    @foreach (var gig in Model.UpcomingGigs)
+    {
+        <li>
+            <div class="date">
+                <div class="month">
+                    @gig.Date.ToString("MM")
+                </div>
+                <div class="day">
+                    @gig.Date.ToString("dd")
+                </div>
+            </div>
+            <div class="details">
+                <span class="artist">
+                    @Html.ActionLink(gig.Artist.Name, "Details", "Gigs", new { id = gig.Id }, null)
+
+                    @if (gig.IsCanceled)
+                    {
+                        <span class="label label-warning">Canceled</span>
+                    }
+                </span>
+                <span class="genre">
+                    @gig.Genre.Name
+                </span>
+                @if (Model.ShowActions && !gig.IsCanceled)
+                {
+                    <button 
+                            data-gig-id="@gig.Id" 
+                            class="btn 
+                                @(Model.Attendances.Contains(gig.Id) ? "btn-info" : "btn-default")
+                             btn-sm pull-right js-toggle-attendance">Going?</button>
+                }
+            </div>
+        </li>
+    }
+</ul>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            GigsController.initAttendance("#gigs");
+        });
+    </script>
+}
